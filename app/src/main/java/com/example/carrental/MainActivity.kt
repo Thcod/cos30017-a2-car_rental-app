@@ -2,6 +2,7 @@ package com.example.carrental
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -31,8 +32,10 @@ class MainActivity : AppCompatActivity() {
                 val renter = data.getStringExtra(DetailsActivity.EXTRA_RENTER).orEmpty()
                 val booking = Booking(car, days, renter)
                 CarStore.book(booking)
+                Log.d(TAG, "Booked ${car.name} ${car.model}: $days days, total ${booking.total}, balance ${CarStore.balance}")
                 toast("Booked ${car.name} ${car.model} for ${booking.total} credits")
             } else {
+                Log.d(TAG, "Booking cancelled by user")
                 toast("Booking cancelled")
             }
             refresh()
@@ -183,6 +186,7 @@ class MainActivity : AppCompatActivity() {
                     .setNegativeButton("Keep booking", null)
                     .setPositiveButton("Cancel booking") { _, _ ->
                         CarStore.cancel(booking)
+                        Log.d(TAG, "Cancelled ${booking.car.name} ${booking.car.model}: refunded ${booking.total}, balance ${CarStore.balance}")
                         toast("Booking cancelled, ${booking.total} credits refunded")
                         refresh()
                     }
@@ -193,4 +197,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+
+    companion object {
+        private const val TAG = "CarRental"
+    }
 }

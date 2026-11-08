@@ -2,6 +2,7 @@ package com.example.carrental
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import com.example.carrental.databinding.ActivityDetailsBinding
@@ -20,7 +21,7 @@ class DetailsActivity : AppCompatActivity() {
         car = IntentCompat.getParcelableExtra(intent, EXTRA_CAR, Car::class.java)!!
         b.carImage.setImageResource(car.imageRes)
         b.carName.text = "${car.name} ${car.model}"
-        b.carDetails.text = "Year: ${car.year}\nKilometres: ${car.km}\nCost: ${car.dailyCost} credits/day"
+        b.carDetails.text = "Year: ${car.year}\nKilometres: ${car.km}\nRate: ${car.dailyCost} credits/day"
         b.ratingBar.rating = car.rating
 
         b.daysSlider.addOnChangeListener { _, _, _ -> updateTotal() }
@@ -48,6 +49,7 @@ class DetailsActivity : AppCompatActivity() {
             else -> null
         }
         if (error != null) {
+            Log.w(TAG, "Validation failed: $error")
             if (name.isEmpty() || !name.matches(Regex("[A-Za-z ]+"))) b.renterName.error = error
             Snackbar.make(b.root, error, Snackbar.LENGTH_LONG).show()
             return
@@ -61,6 +63,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val TAG = "CarRental"
         const val EXTRA_CAR = "car"
         const val EXTRA_DAYS = "days"
         const val EXTRA_RENTER = "renter"
