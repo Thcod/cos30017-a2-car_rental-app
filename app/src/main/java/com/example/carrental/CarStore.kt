@@ -2,12 +2,12 @@ package com.example.carrental
 
 /** In-memory data only (nothing is saved to disk). */
 object CarStore {
+    const val START_BALANCE = 500
     const val MAX_PER_RENTAL = 400
 
-    var balance = 500
+    var balance = START_BALANCE
         private set
 
-    // Replace R.drawable.ic_car with your own free photos (e.g. Pexels/Unsplash) if you like
     val cars = listOf(
         Car(1, "Toyota", "Corolla", 2018, 4.0f, 85000, 45, R.drawable.car_1),
         Car(2, "Honda", "Civic", 2021, 4.5f, 32000, 60, R.drawable.car_2),
@@ -48,5 +48,14 @@ object CarStore {
     fun cancel(booking: Booking) {
         balance += booking.total
         bookings.remove(booking)
+    }
+
+    /** Restores the starting state so each test begins clean. */
+    fun reset() {
+        balance = START_BALANCE
+        bookings.clear()
+        favourites.clear()
+        query = ""
+        sort = 0
     }
 }
